@@ -22,7 +22,7 @@ public class LoginPage extends BasePage{
     @FindBy(xpath = "//button[@name='login']")
     WebElement btnLoginSubmit; //kirill@gmail.com   Ab123456!
 
-    @FindBy(xpath = "//button[@name ='Registration']")
+    @FindBy(xpath = "//button[@name ='registration']")
     WebElement btnRegistration;
 
     public LoginPage typeLoginForm(String email, String password){
