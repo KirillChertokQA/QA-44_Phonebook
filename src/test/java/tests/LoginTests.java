@@ -8,19 +8,23 @@ import pages.HomePage;
 public class LoginTests extends ApplicationManager {
 
     @Test
-    public void loginPositiveTest(){
-
-
-        Assert.assertTrue(new HomePage(getDriver()).clickBtnLoginHeader()
-                .typeLoginForm("kirill@gmail.com", "Ab123456!")
+    public void loginPositiveTest() {
+        boolean result = new HomePage(getDriver())
+                .clickBtnLoginHeader()
+                .typeLoginForm("qa_mail@mail.com", "Qwerty123!")
                 .clickBtnLoginPositive()
-                .isElementContactPresent());
-
-
-
-       // Assert.assertEquals(100, 200); методы Assert
-      //  Assert.assertTrue(true);
-      //  Assert.assertFalse(false);
-      //  Assert.assertNotEquals(100, 100);
+                .isElementContactPresent();
+        Assert.assertTrue(result);
     }
-}
+
+        @Test
+        public void loginNegativeTest_wrongPassword() {
+            Assert.assertTrue(new HomePage(getDriver())
+                    .clickBtnLoginHeader()
+                    .typeLoginForm("qa_mail@mail.com", "Qwerty123!----")
+                    .clickBtnLoginNegative().closeAllert()
+                    .isTextInElementPresent_errorMassage());
+
+        }
+    }
+

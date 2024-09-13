@@ -1,10 +1,15 @@
 package pages;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage extends BasePage{
 
@@ -25,6 +30,9 @@ public class LoginPage extends BasePage{
     @FindBy(xpath = "//button[@name ='registration']")
     WebElement btnRegistration;
 
+    @FindBy(xpath = "//div[@class='login_login__3EHKB']/div")
+    WebElement errorMessageLogin;
+
     public LoginPage typeLoginForm(String email, String password){
         //inputEmail.clear();
         inputEmail.sendKeys(email);
@@ -42,4 +50,21 @@ public class LoginPage extends BasePage{
         return new ContactPage(driver);
     }
 
+    public LoginPage clickBtnLoginNegative() {
+        btnLoginSubmit.click();
+        return this;
+    }
+
+    public LoginPage closeAllert() {
+        pause(3);
+        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.alertIsPresent());
+        System.out.println(alert.getText());
+        alert.accept();
+        return new LoginPage(driver);
+    }
+
+    public boolean isTextInElementPresent_errorMassage(){
+        return isElementPresent(errorMessageLogin, "Login Failed with code 401");
+    }
 }
