@@ -1,5 +1,6 @@
 package pages;
 
+import dto.UserDto;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,6 +44,13 @@ public class LoginPage extends BasePage{
         return this;
     }
 
+    public LoginPage typeLoginForm(UserDto user){
+        //inputEmail.clear();
+        inputEmail.sendKeys(user.getEmail());
+        inputPassword.sendKeys(user.getPassword());
+        return this;
+    }
+
     public ContactPage clickBtnLoginPositive(){
         btnLoginSubmit.click();
         return new ContactPage(driver);
@@ -76,7 +84,11 @@ public class LoginPage extends BasePage{
         return isElementPresent(errorMessageLogin, "Login Failed with code 401");
     }
 
-    public boolean isTextInElementPresent_errorMessageReg(){
-        return isElementPresent(errorMessageRegistration, "Registration failed with code 400");
+    public boolean isTextInElementPresent_errorMassage(String text){
+        return isElementPresent(errorMessageLogin, text);
     }
+
+//    public boolean isTextInElementPresent_errorMessageReg(){
+//        return isElementPresent(errorMessageRegistration, "Registration failed with code 400");
+//    }
 }

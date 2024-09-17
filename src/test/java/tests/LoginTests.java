@@ -17,24 +17,32 @@ public class LoginTests extends ApplicationManager {
         Assert.assertTrue(result);
     }
 
-        @Test
-        public void loginNegativeTest_wrongPassword() {
-            Assert.assertTrue(new HomePage(getDriver())
-                    .clickBtnLoginHeader()
-                    .typeLoginForm("qa_mail@mail.com", "Qwerty123!----")
-                    .clickBtnLoginNegative().closeAllert()
-                    .isTextInElementPresent_errorMassage());
+    @Test
+    public void loginNegativeTest_wrongPassword() {
+        Assert.assertTrue(new HomePage(getDriver())
+                .clickBtnLoginHeader()
+                .typeLoginForm("qa_mail@mail.com", "Qwerty123!----")
+                .clickBtnLoginNegative().closeAllert()
+                .isTextInElementPresent_errorMassage());
 
-        }
-
-        @Test
-        public void loginNegativeTest_wrongEmail(){
-            Assert.assertTrue(new HomePage(getDriver())
-                    .clickBtnLoginHeader()
-                    .typeLoginForm("qa_mailmail.ru", "Qwerty123!")
-                    .clickBtnLoginNegative().closeAllert()
-                    .isTextInElementPresent_errorMassage());
-        }
     }
 
+    @Test
+    public void loginNegativeTest_wrongEmailUnregUser() {
+        Assert.assertTrue(new HomePage(getDriver())
+                .clickBtnLoginHeader()
+                .typeLoginForm("qa_mail567@mail.ru", "Qwerty123!")
+                .clickBtnLoginNegative().closeAllert()
+                .isTextInElementPresent_errorMassage());
+    }
+
+    @Test
+    public void loginNegativeTest_wrongEmailWOAt() {       //WO=without
+        Assert.assertTrue(new HomePage(getDriver())
+                .clickBtnLoginHeader()
+                .typeLoginForm("qa_mail567mail.ru", "Qwerty123!")
+                .clickBtnLoginNegative().closeAllert()
+                .isTextInElementPresent_errorMassage());
+    }
+}
 
