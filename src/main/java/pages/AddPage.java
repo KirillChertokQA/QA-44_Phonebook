@@ -1,15 +1,20 @@
 package pages;
 
 import dto.ContactDtoLombok;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AddPage extends BasePage{
+import java.time.Duration;
 
-    public AddPage(WebDriver driver){
+public class AddPage extends BasePage {
+
+    public AddPage(WebDriver driver) {
         setDriver(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }
@@ -45,8 +50,29 @@ public class AddPage extends BasePage{
         return this;
     }
 
-    public ContactPage clickBtnSaveContactPositive(){
+    public ContactPage clickBtnSaveContactPositive() {
         btnSaveContact.click();
         return new ContactPage(driver);
+    }
+
+    public ContactPage clickBtnSaveContactNegative() {
+        btnSaveContact.click();
+        return new ContactPage(driver);
+    }
+
+    public String alertText() {
+        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.alertIsPresent());
+        System.out.println(alert.getText());
+        String text = alert.getText();
+        return text;
+    }
+
+    public AddPage closeAlert(){
+        pause(3);
+        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.alertIsPresent());
+        alert.accept();
+        return new AddPage(driver);
     }
 }

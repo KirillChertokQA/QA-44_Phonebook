@@ -60,5 +60,6 @@ public class BasePage {
             }
             default -> throw new IllegalArgumentException("Invalid parameter header menu");
         }
+
     }
 }

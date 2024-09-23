@@ -32,5 +32,4 @@ public class ContactPage extends BasePage{
         return lastPhoneInList.getText().equals(phone);
     }
 
-
 }
