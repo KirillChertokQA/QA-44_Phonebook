@@ -1,9 +1,12 @@
 package tests;
 
+import data_provider.DPAddContact;
 import dto.ContactDtoLombok;
 import dto.UserDto;
 import manager.ApplicationManager;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.AddPage;
@@ -59,7 +62,7 @@ public class AddContactsTests extends ApplicationManager {
                 .clickBtnSaveContactNegative();
         String alertMessage = addPage.alertText();
         Assert.assertTrue(alertMessage.contains("Email not valid"));
-        addPage.closeAlert();
+        addPage.closeAlert(); //после Assert никаких действий не выполняют
     }
 
     @Test
@@ -76,7 +79,7 @@ public class AddContactsTests extends ApplicationManager {
                 .clickBtnSaveContactNegative();
         String alertMessage = addPage.alertText();
         Assert.assertTrue(alertMessage.contains("Phone not valid"));
-        addPage.closeAlert();
+        addPage.closeAlert(); //после Assert никаких действий не выполняют
     }
 
     @Test
@@ -93,6 +96,52 @@ public class AddContactsTests extends ApplicationManager {
                 .clickBtnSaveContactNegative();
         String alertMessage = addPage.alertText();
         Assert.assertTrue(alertMessage.contains("Phone not valid"));
-        addPage.closeAlert();
+        addPage.closeAlert(); //после Assert никаких действий не выполняют
+    }
+
+    @Test
+    public void addNewContactNegativeTest_nameIsEmpty() {
+        ContactDtoLombok contact = ContactDtoLombok.builder()
+                .name("")
+                .lastName(generateString(10))
+                .phone(generatePhone(10))
+                .email(generateEmail(12))
+                .address(generateString(20))
+                .description(generateString(10))
+                .build();
+        Assert.assertTrue(addPage.fillContactForm(contact)
+                .clickBtnSaveContactPositive()
+                .urlContainsAdd());
+    }
+
+    @Test
+    public void addNewContactNegativeTest_wrongEmail() {
+        ContactDtoLombok contact = ContactDtoLombok.builder()
+                .name(generateString(4))
+                .lastName(generateString(10))
+                .phone(generatePhone(10))
+                .email(generateString(12))
+                .address(generateString(20))
+                .description(generateString(10))
+                .build();
+       Assert.assertTrue(addPage.fillContactForm(contact)
+                .clickBtnSaveContactPositive()
+                .isAlertPresent(5));
+    }
+
+    @Test(dataProvider = "addNewContactDP", dataProviderClass = DPAddContact.class)
+    public void addNewContactNegativeTest_wrongDP(ContactDtoLombok contact) {          //Data Provider - DP
+        System.out.println("-->" +contact);
+        Assert.assertTrue(addPage.fillContactForm(contact)
+                .clickBtnSaveContactPositive()
+                .isAlertPresent(5));
+    }
+
+    @Test(dataProvider = "addNewContactDPFile", dataProviderClass = DPAddContact.class)
+    public void addNewContactNegativeTest_wrongDPFile(ContactDtoLombok contact) {          //Data Provider - DP
+        System.out.println("-->" +contact);
+        Assert.assertTrue(addPage.fillContactForm(contact)
+                .clickBtnSaveContactPositive()
+                .isAlertPresent(5));
     }
 }
