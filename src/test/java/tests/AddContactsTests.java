@@ -15,6 +15,8 @@ import pages.HomePage;
 import pages.LoginPage;
 import utils.HeaderMenuItem;
 
+import java.lang.reflect.Method;
+
 import static pages.BasePage.clickButtonsOnHeader;
 import static utils.RandomUtils.*;
 
@@ -26,6 +28,7 @@ public class AddContactsTests extends ApplicationManager {
 
     @BeforeMethod
     public void login() {
+        logger.info("start method--> login "+ "user: "+"qa_mail@mail.com");
         new HomePage(getDriver());
         LoginPage loginPage = clickButtonsOnHeader(HeaderMenuItem.LOGIN);
         loginPage.typeLoginForm(user).clickBtnLoginPositive();
@@ -33,7 +36,7 @@ public class AddContactsTests extends ApplicationManager {
     }
 
     @Test
-    public void addNewContactPositiveTest() {
+    public void addNewContactPositiveTest(Method method) {
         ContactDtoLombok contact = ContactDtoLombok.builder()
                 .name(generateString(5))
                 .lastName(generateString(10))
@@ -42,6 +45,7 @@ public class AddContactsTests extends ApplicationManager {
                 .address(generateString(20))
                 .description(generateString(10))
                 .build();
+        logger.info("start--> "+method.getName()+ " with data: "+contact.toString());
         Assert.assertTrue(addPage.fillContactForm(contact)
                 .clickBtnSaveContactPositive()
                 .isLastPhoneEquals(contact.getPhone()));
