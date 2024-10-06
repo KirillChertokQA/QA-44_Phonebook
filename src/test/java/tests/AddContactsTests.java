@@ -5,20 +5,20 @@ import dto.ContactDtoLombok;
 import dto.UserDto;
 import manager.ApplicationManager;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import pages.AddPage;
 import pages.ContactPage;
 import pages.HomePage;
 import pages.LoginPage;
 import utils.HeaderMenuItem;
+import utils.TestNGListener;
 
 import java.lang.reflect.Method;
 
 import static pages.BasePage.clickButtonsOnHeader;
 import static utils.RandomUtils.*;
+
+@Listeners(TestNGListener.class)
 
 public class AddContactsTests extends ApplicationManager {
 

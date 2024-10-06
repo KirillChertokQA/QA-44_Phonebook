@@ -2,10 +2,13 @@ package manager;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.openqa.selenium.support.events.WebDriverListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import utils.WDListener;
 
 
 public class ApplicationManager {
@@ -19,15 +22,19 @@ public class ApplicationManager {
 
     @BeforeMethod
     public void setUp(){
-        logger.info("Start method--> Set up");
+       // logger.info("Start testing ==============================");
         driver = new ChromeDriver();
+        //new realization WDListener in Selenium
+        WebDriverListener webDriverListener = new WDListener();
+        driver = new EventFiringDecorator<>(webDriverListener).decorate(driver);
+
         driver.manage().window().maximize();
     }
 
 
     @AfterMethod
     public void tearDown(){
-        logger.info("Start method--> tear Down");
+      //  logger.info("Stop testing =================================");
     //  if(driver != null){
      //      driver.quit();
      //   }

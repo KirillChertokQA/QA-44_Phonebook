@@ -1,9 +1,7 @@
 package pages;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import dto.ContactDtoLombok;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -24,6 +22,18 @@ public class ContactPage extends BasePage {
 
     @FindBy(xpath = "//div[@class='contact-page_leftdiv__yhyke']//div[@class='contact-item_card__2SOIM'][last()]/h3")
     WebElement lastPhoneInList;
+
+    @FindBy(xpath = "//div[@class='contact-page_leftdiv__yhyke']//div[@class='contact-item_card__2SOIM']")
+            WebElement firstContactOnList;
+
+    @FindBy(xpath = "//button[text()='Remove']")
+    WebElement btnRemoveContact;
+
+    @FindBy(xpath = "//button[text()='Edit']")
+    WebElement btnEditContact;
+
+    @FindBy(xpath = "//div[@class='contact-page_leftdiv__yhyke']//div[@class='contact-item_card__2SOIM']/h3")
+    WebElement firstPhoneInList;
 
     public boolean isElementContactPresent() {
         return btnContact.isDisplayed();
@@ -49,4 +59,69 @@ public class ContactPage extends BasePage {
             return false;
         }
     }
-}
+
+    public void clickFirstElementOfContactsList() {
+        firstContactOnList.click();
+    }
+
+    public void clickBtnRemoveContact(){
+        btnRemoveContact.click();
+    }
+
+    public int getContactNumber() {
+        pause(2);
+        return driver.findElements(By.xpath("//div[@class='contact-item_card__2SOIM']")).size();
+    }
+
+    public void clickBtnEditContact(){
+        btnEditContact.click();
+    }
+
+    @FindBy(xpath = "//input[@placeholder='Name']")
+    WebElement inputName;
+
+    @FindBy(xpath = "//input[@placeholder='Last Name']")
+    WebElement inputLastName;
+
+    @FindBy(xpath = "//input[@placeholder='Phone']")
+    WebElement inputPhone;
+
+    @FindBy(xpath = "//input[@placeholder='email']")
+    WebElement inputEmail;
+
+    @FindBy(xpath = "//input[@placeholder='Address']")
+    WebElement inputAddress;
+
+    @FindBy(xpath = "//input[@placeholder='description']")
+    WebElement inputDescription;
+
+    @FindBy(xpath = "//button[text()='Save']")
+    WebElement btnSaveEditedContact;
+
+    public ContactPage fillContactFormEdit(ContactDtoLombok contact) {
+        inputName.clear();
+        inputName.sendKeys(contact.getName());
+        inputLastName.clear();
+        inputLastName.sendKeys(contact.getLastName());
+        inputPhone.clear();
+        inputPhone.sendKeys(contact.getPhone());
+        inputEmail.clear();
+        inputEmail.sendKeys(contact.getEmail());
+        inputAddress.clear();
+        inputAddress.sendKeys(contact.getAddress());
+//        inputDescription.clear();
+//       inputDescription.sendKeys(contact.getDescription());
+        return this;
+    }
+
+    public ContactPage clickBtnEditContactPositive() {
+        btnSaveEditedContact.click();
+        return new ContactPage(driver);
+    }
+
+    public boolean isFirstPhoneEquals(String phone) {
+        pause(3);
+        return firstPhoneInList.getText().equals(phone);
+    }
+
+    }
