@@ -69,7 +69,8 @@ public class ContactPage extends BasePage {
     }
 
     public int getContactNumber() {
-        pause(2);
+       // pause(2);
+        clickWait(By.xpath("//div[@class='contact-item_card__2SOIM']"),2);
         return driver.findElements(By.xpath("//div[@class='contact-item_card__2SOIM']")).size();
     }
 
@@ -98,6 +99,20 @@ public class ContactPage extends BasePage {
     @FindBy(xpath = "//button[text()='Save']")
     WebElement btnSaveEditedContact;
 
+    //=====================
+
+    @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']/h2")
+    WebElement contactCardNameLastName;
+    @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']")
+    WebElement contactCardPhone;
+    @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']/br")
+    WebElement contactCardEmail;
+    @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']/br[last()]")
+    WebElement contactCardAddress;
+    @FindBy(xpath = "//div[@class='contact-item-detailed_card__50dTS']/h3")
+    WebElement contactCardDescription;
+
+
     public ContactPage fillContactFormEdit(ContactDtoLombok contact) {
         inputName.clear();
         inputName.sendKeys(contact.getName());
@@ -109,8 +124,8 @@ public class ContactPage extends BasePage {
         inputEmail.sendKeys(contact.getEmail());
         inputAddress.clear();
         inputAddress.sendKeys(contact.getAddress());
-//        inputDescription.clear();
-//       inputDescription.sendKeys(contact.getDescription());
+        inputDescription.clear();
+       inputDescription.sendKeys(contact.getDescription());
         return this;
     }
 
@@ -124,4 +139,32 @@ public class ContactPage extends BasePage {
         return firstPhoneInList.getText().equals(phone);
     }
 
+
+
+    public ContactDtoLombok getContactFromDetailedCard() {
+        pause(3);
+//        System.out.println(contactCardNameLastName.getText());
+//        System.out.println(contactCardPhone.getText());
+//        System.out.println(contactCardEmail.getText());
+//        System.out.println(contactCardAddress.getText());
+//        System.out.println(contactCardDescription.getText());
+
+        String name = contactCardNameLastName.getText().split(" ")[0];
+        String lastName = contactCardNameLastName.getText().split(" ")[1];
+        String phone = contactCardPhone.getText().split("\n")[1];
+        String email = contactCardPhone.getText().split("\n")[2];
+        String address = contactCardPhone.getText().split("\n")[3];
+        String description = contactCardDescription.getText().split(": ")[1];
+
+        ContactDtoLombok contact = ContactDtoLombok.builder()
+                .name(name)
+                .lastName(lastName)
+                .phone(phone)
+                .address(address)
+                .email(email)
+                .description(description)
+                .build();
+        System.out.println(contact);
+        return contact;
     }
+}

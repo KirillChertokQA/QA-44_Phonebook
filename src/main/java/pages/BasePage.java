@@ -71,4 +71,15 @@ public class BasePage {
        return new WebDriverWait(driver, Duration.ofSeconds(time))
                 .until(ExpectedConditions.urlContains(urlPart));
     }
+
+
+    public void clickWait(WebElement element, int time){
+        new WebDriverWait(driver, Duration.ofSeconds(time))
+                .until(ExpectedConditions.elementToBeClickable(element)).click();
+    }
+
+    public void clickWait(By locator, int time){
+        new WebDriverWait(driver, Duration.ofSeconds(time))
+                .until(ExpectedConditions.elementToBeClickable(locator)).click();
+    }
 }

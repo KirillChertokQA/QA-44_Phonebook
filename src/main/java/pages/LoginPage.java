@@ -26,7 +26,7 @@ public class LoginPage extends BasePage{
     WebElement inputPassword;
 
     @FindBy(xpath = "//button[@name='login']")
-    WebElement btnLoginSubmit; //kirill@gmail.com   Ab123456!
+    WebElement btnLoginSubmit;  //kirill@gmail.com   Ab123456!
 
     @FindBy(xpath = "//button[@name ='registration']")
     WebElement btnRegistration;

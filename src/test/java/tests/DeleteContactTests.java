@@ -28,8 +28,7 @@ public class DeleteContactTests extends ApplicationManager {
     }
 
     @Test
-    public void deleteContactPositiveTest(){
-
+    public void deleteContactPositiveTest() {
         int quantityBeforeDelete = contactPage.getContactNumber();
         System.out.println("--> " + quantityBeforeDelete);
         contactPage.clickFirstElementOfContactsList();
@@ -37,6 +36,5 @@ public class DeleteContactTests extends ApplicationManager {
         int quantityAfterDelete = contactPage.getContactNumber();
         System.out.println("--> " + quantityAfterDelete);
         Assert.assertEquals(quantityBeforeDelete - 1, quantityAfterDelete);
-
     }
 }

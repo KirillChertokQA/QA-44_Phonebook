@@ -1,5 +1,8 @@
 package tests;
 
+import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
 import manager.ApplicationManager;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.Assert;
@@ -15,9 +18,12 @@ import static utils.TakeScreenShot.takeScreenShot;
 
 public class LoginTests extends ApplicationManager {
 
+    @Description("positive log in method")
+    @Owner("Kirill Qa-44")
     @Test
     public void loginPositiveTest() {
 
+        Allure.step("fill LogIn form");
         boolean result = new HomePage(getDriver())
                 .clickBtnLoginHeader()
                 .typeLoginForm("qa_mail@mail.com", "Qwerty123!")
