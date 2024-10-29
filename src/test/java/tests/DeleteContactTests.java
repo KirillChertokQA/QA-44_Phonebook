@@ -18,7 +18,7 @@ public class DeleteContactTests extends ApplicationManager {
 
     ContactPage contactPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void login() {
         logger.info("start method--> login "+ "user: "+"qa_mail@mail.com");
         new HomePage(getDriver());
@@ -27,7 +27,7 @@ public class DeleteContactTests extends ApplicationManager {
 
     }
 
-    @Test
+    @Test(groups = "smoke")
     public void deleteContactPositiveTest() {
         int quantityBeforeDelete = contactPage.getContactNumber();
         System.out.println("--> " + quantityBeforeDelete);

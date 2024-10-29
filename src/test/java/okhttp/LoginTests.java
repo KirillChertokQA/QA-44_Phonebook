@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -19,10 +20,28 @@ public class LoginTests implements BaseApi {
 
     TokenDto token;
 
+    UserDto user;
+
+    @BeforeMethod
+    public void registrationUser() {
+        user = new UserDto(generateEmail(10), "Qwerty123!");
+        RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + REGISTRATION_PATH)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("registration response is successful --> " + response.isSuccessful());
+    }
+
     @Test
-    public void loginUser() {
-        UserDto user = new UserDto(getProperty("data.properties", "email"),
-                getProperty("data.properties", "password"));
+    public void loginPositiveTest() {
+
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
                 .url(BASE_URL + LOGIN_PATH)
@@ -40,8 +59,7 @@ public class LoginTests implements BaseApi {
 
     @Test
     public void loginPositiveTest_returnToken() throws IOException {
-        UserDto user = new UserDto(getProperty("data.properties", "email"),
-                getProperty("data.properties", "password"));
+
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
                 .url(BASE_URL + LOGIN_PATH)
@@ -66,8 +84,7 @@ public class LoginTests implements BaseApi {
 
     @Test
     public void loginNegativeTest_ExRes401() throws IOException {
-        UserDto user = new UserDto(getProperty("data.properties", "email"),
-                "Qwerty123");
+        user.setPassword("wrong_password");
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
                 .url(BASE_URL + LOGIN_PATH)
@@ -79,13 +96,18 @@ public class LoginTests implements BaseApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
-        Assert.assertEquals(response.code(), 401);
-        System.out.println(response.code());
-        Assert.assertEquals(errorMessage.getStatus(), 401);
-        Assert.assertTrue(errorMessage.getMessage().toString().contains("Login or Password incorrect"));
-        System.out.println(errorMessage.getMessage().toString());
+        if (response.code() == 401) {
+            ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
+            Assert.assertTrue(errorMessage.getMessage().toString().equals("Login or Password incorrect"));
+        }else{
+            Assert.fail("something went wrong, response code --> "+response.code());
+//            System.out.println(response.code());
+//            System.out.println(errorMessage.getMessage().toString());
+//            Assert.assertEquals(response.code(), 401);
+//        Assert.assertEquals(errorMessage.getStatus(), 401);
 
 
+
+        }
     }
 }

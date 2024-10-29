@@ -7,6 +7,8 @@ import manager.ApplicationManager;
 import org.openqa.selenium.TakesScreenshot;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pages.HomePage;
 import utils.TakeScreenShot;
@@ -20,7 +22,15 @@ public class LoginTests extends ApplicationManager {
 
     @Description("positive log in method")
     @Owner("Kirill Qa-44")
-    @Test
+
+//    @Test(groups = {"parameters_tests", "smoke"})
+//    @Parameters({"value1", "value2"})
+//    public void parameterTest(int a, int b){
+//        int res = a + b;
+//        Assert.assertTrue(res > 0);
+//    }
+
+    @Test(groups = "smoke")
     public void loginPositiveTest() {
 
         Allure.step("fill LogIn form");

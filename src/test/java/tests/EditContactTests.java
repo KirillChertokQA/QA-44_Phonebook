@@ -26,7 +26,7 @@ public class EditContactTests extends ApplicationManager {
 
     ContactPage contactPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void login() {
         logger.info("start method--> login "+ "user: "+"qa_mail@mail.com");
         new HomePage(getDriver());
@@ -35,7 +35,7 @@ public class EditContactTests extends ApplicationManager {
 
     }
 
-    @Test(retryAnalyzer = RetryAnalyzer.class)
+    @Test(retryAnalyzer = RetryAnalyzer.class, groups = "smoke")
     public void editContactPositiveTest(){
 //        contactPage.clickFirstElementOfContactsList();
 //        contactPage.clickBtnEditContact();
