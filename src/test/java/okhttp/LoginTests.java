@@ -9,22 +9,23 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 
 import java.io.IOException;
 
-import static utils.RandomUtils.*;
+import static utils.PropertiesReader.getProperty;
+import static utils.RandomUtils.generateEmail;
 
-public class RegistrationTests implements BaseApi {
+public class LoginTests implements BaseApi {
 
-    SoftAssert softAssert = new SoftAssert();
+    TokenDto token;
 
     @Test
-    public void registrationPositiveTest(){
-        UserDto user = new UserDto(generateEmail(10), "Qwerty123!");
+    public void loginUser() {
+        UserDto user = new UserDto(getProperty("data.properties", "email"),
+                getProperty("data.properties", "password"));
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL+REGISTRATION_PATH)
+                .url(BASE_URL + LOGIN_PATH)
                 .post(requestBody)
                 .build();
         Response response;
@@ -33,15 +34,17 @@ public class RegistrationTests implements BaseApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println(response.code());
         Assert.assertTrue(response.isSuccessful());
     }
 
     @Test
-    public void registrationPositiveTest_validateToken() throws IOException {
-        UserDto user = new UserDto(generateEmail(10), "Qwerty123!");
+    public void loginPositiveTest_returnToken() throws IOException {
+        UserDto user = new UserDto(getProperty("data.properties", "email"),
+                getProperty("data.properties", "password"));
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL+REGISTRATION_PATH)
+                .url(BASE_URL + LOGIN_PATH)
                 .post(requestBody)
                 .build();
         Response response;
@@ -50,23 +53,24 @@ public class RegistrationTests implements BaseApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             TokenDto token = GSON.fromJson(response.body().string(), TokenDto.class);
             System.out.println(token.getToken());
             Assert.assertEquals(response.code(), 200);
-        }else {
+        } else {
             ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
             System.out.println(errorMessage.getError());
-            Assert.fail("response code --> "+response.code());
+            Assert.fail("response code --> " + response.code());
         }
     }
 
     @Test
-    public void registrationNegativeTest_ExRes400() throws IOException {
-        UserDto user = new UserDto(generateEmail(10), "Qwerty123");
+    public void loginNegativeTest_ExRes401() throws IOException {
+        UserDto user = new UserDto(getProperty("data.properties", "email"),
+                "Qwerty123");
         RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
         Request request = new Request.Builder()
-                .url(BASE_URL+REGISTRATION_PATH)
+                .url(BASE_URL + LOGIN_PATH)
                 .post(requestBody)
                 .build();
         Response response;
@@ -76,11 +80,12 @@ public class RegistrationTests implements BaseApi {
             throw new RuntimeException(e);
         }
         ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
-        softAssert.assertEquals(response.code(), 400);
-        softAssert.assertEquals(errorMessage.getStatus(), 400);
-        softAssert.assertEquals(errorMessage.getError(), "Bad Request");
-        softAssert.assertTrue(errorMessage.getMessage().toString().contains("password= At least 8 characters; Must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number;"));
+        Assert.assertEquals(response.code(), 401);
+        System.out.println(response.code());
+        Assert.assertEquals(errorMessage.getStatus(), 401);
+        Assert.assertTrue(errorMessage.getMessage().toString().contains("Login or Password incorrect"));
         System.out.println(errorMessage.getMessage().toString());
-        softAssert.assertAll();
+
+
     }
 }
