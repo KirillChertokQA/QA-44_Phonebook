@@ -106,7 +106,28 @@ public class LoginTests implements BaseApi {
 //            Assert.assertEquals(response.code(), 401);
 //        Assert.assertEquals(errorMessage.getStatus(), 401);
 
+        }
+    }
 
+    @Test(groups = "negative")
+    public void loginNegativeTest_wrongLogin() throws IOException {
+        user.setUsername("logingmail.com");
+        RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL + LOGIN_PATH)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.code() == 401) {
+            ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
+            Assert.assertTrue(errorMessage.getMessage().toString().equals("Login or Password incorrect"));
+        }else{
+            Assert.fail("something went wrong, response code --> "+response.code());
 
         }
     }

@@ -83,4 +83,25 @@ public class RegistrationTests implements BaseApi {
         System.out.println(errorMessage.getMessage().toString());
         softAssert.assertAll();
     }
+
+
+    @Test(groups = "negative")
+    public void registrationNegativeTest_wrongURL() throws IOException {
+        UserDto user = new UserDto(generateEmail(10), "Qwerty123!");
+        RequestBody requestBody = RequestBody.create(GSON.toJson(user), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+LOGIN_PATH)
+                .post(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
+        softAssert.assertEquals(response.code(), 401);
+        softAssert.assertEquals(errorMessage.getStatus(), 401);
+        softAssert.assertAll();
+    }
 }

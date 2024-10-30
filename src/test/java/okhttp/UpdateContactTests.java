@@ -1,9 +1,6 @@
 package okhttp;
 
-import dto.ContactDtoLombok;
-import dto.ContactsDto;
-import dto.TokenDto;
-import dto.UserDto;
+import dto.*;
 import interfaces.BaseApi;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -12,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.io.IOException;
 
@@ -23,6 +21,7 @@ public class UpdateContactTests implements BaseApi {
 
     TokenDto token;
     ContactDtoLombok contact;
+    SoftAssert softAssert = new SoftAssert();
 
     @BeforeClass
     public void loginUser(){
@@ -88,5 +87,36 @@ public class UpdateContactTests implements BaseApi {
             throw new RuntimeException(e);
         }
         Assert.assertTrue(response.isSuccessful());
+    }
+
+    @Test(groups = "negative")
+    public void updateContactNegativeTest_WOName() throws IOException {
+        ContactDtoLombok contactNew = ContactDtoLombok.builder()
+                .id(contact.getId())
+                .name("")
+                .lastName(generateString(10))
+                .phone(generatePhone(10))
+                .email(generateEmail(12))
+                .address(generateString(20))
+                .description(generateString(10))
+                .build();
+        RequestBody requestBody = RequestBody.create(GSON.toJson(contactNew), JSON);
+        Request request = new Request.Builder()
+                .url(BASE_URL+GET_ALL_CONTACTS_PATH)
+                .addHeader("Authorization", token.getToken())
+                .put(requestBody)
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ErrorMessageDto errorMessage = GSON.fromJson(response.body().string(), ErrorMessageDto.class);
+        softAssert.assertEquals(response.code(), 400);
+        softAssert.assertEquals(errorMessage.getStatus(), 400);
+        softAssert.assertTrue(errorMessage.getMessage().toString().contains("name=must not be blank"));
+        System.out.println(errorMessage.getMessage().toString());
+        softAssert.assertAll();
     }
 }

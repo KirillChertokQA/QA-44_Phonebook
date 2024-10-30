@@ -94,6 +94,23 @@ public class GetAllUserPhonesTests implements BaseApi {
         Assert.assertEquals(response.code(), 401);
     }
 
+    @Test(groups = "negative")
+    public void getAllUserPhonesNegativeTest_wrongRequest(){
+        Request request = new Request.Builder()
+                .url(BASE_URL+GET_ALL_CONTACTS_PATH)
+                .addHeader("Authorization", token.getToken())
+                .delete()
+                .build();
+        Response response;
+        try {
+            response = OK_HTTP_CLIENT.newCall(request).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(response.code());
+        Assert.assertEquals(response.code(), 500);
+    }
+
 
 
 
